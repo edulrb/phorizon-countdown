@@ -134,12 +134,41 @@
         </div>
     </div>
 
-    <script>
-        const dataAlvo = new Date("2026-08-20T00:00:00").getTime();
-        const intervalo = setInterval(atualizarContador, 1000);
+<script>
+        // Adicionei "-03:00" no final para cravar o fuso horário de Brasília.
+        // Assim, o zero do contador será exatamente meia-noite no Brasil, independente de onde o usuário acesse.
+        const dataAlvo = new Date("2026-08-20T00:00:00-03:00").getTime();
+        
+        let diferencaTempo = 0; // Armazena a diferença entre a máquina e o mundo real
+
+        // Função para buscar o horário global de forma assíncrona
+        async function obterHorarioGlobal() {
+            try {
+                // Consulta uma API pública confiável
+                const res = await fetch('https://worldtimeapi.org/api/timezone/America/Sao_Paulo');
+                if (!res.ok) throw new Error('Falha na resposta da API');
+                
+                const dados = await res.json();
+                
+                // Horário exato retornado pelo servidor
+                const tempoGlobal = new Date(dados.datetime).getTime();
+                
+                // Horário da máquina no exato momento da resposta
+                const tempoLocal = new Date().getTime();
+                
+                // Calcula se o relógio do usuário está adiantado ou atrasado
+                diferencaTempo = tempoGlobal - tempoLocal;
+            } catch (erro) {
+                // Se a API cair ou der erro, avisa no console mas o site continua funcionando
+                console.warn("Aviso: Falha ao sincronizar horário global. Utilizando relógio local como fallback.");
+            }
+        }
+
+        const intervalo = setInterval(atualizarContador, 100);
 
         function atualizarContador() {
-            const agora = new Date().getTime();
+            // Usa o relógio da máquina + a diferença corrigida da API
+            const agora = new Date().getTime() + diferencaTempo; 
             const distancia = dataAlvo - agora;
 
             if (distancia <= 0) {
@@ -159,6 +188,8 @@
             document.getElementById("segundos").innerText = String(segundos).padStart(2, '0');
         }
 
+        // Dispara a busca pela hora global e inicia o contador imediatamente
+        obterHorarioGlobal();
         atualizarContador();
     </script>
 </body>
