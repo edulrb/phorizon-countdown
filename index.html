@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHorizon Countdown</title>
+    <style>
+        /* Reseta as margens e define o fundo preto caso o tempo acabe */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            background-color: #000;
+            overflow: hidden;
+        }
+
+        #main-container {
+            background-image: url('background.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #logo {
+            max-width: 80%;
+            width: 350px;
+            margin-bottom: 30px;
+        }
+
+        /* Caixa glassmorphism mantida estreita e elegante */
+        .glass-box {
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(20px) saturate(120%);
+            -webkit-backdrop-filter: blur(20px) saturate(120%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px; 
+            padding: 25px 45px; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2), 
+                        inset 0 0 15px rgba(255, 255, 255, 0.05); 
+            
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 15px; 
+        }
+
+        .bloco-tempo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Texto branco, limpo e sem bordas/sombras */
+        .numero, .separador {
+            font-family: 'Arial Black', Impact, sans-serif;
+            font-weight: 900;
+            font-size: 4vw; 
+            color: #FFFFFF; /* Branco puro */
+            line-height: 1;
+            /* Sombras e bordas removidas */
+        }
+
+        .separador {
+            margin-top: -3px; 
+        }
+
+        /* Rótulos acompanhando o estilo clean */
+        .rotulo {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 400; /* Peso normal para manter a clareza */
+            font-size: 1vw; 
+            color: #FFFFFF; /* Branco puro */
+            margin-top: 10px;
+            letter-spacing: 3px;
+            /* Sombras removidas */
+        }
+
+        /* Ajustes para telas de celular */
+        @media (max-width: 768px) {
+            .glass-box {
+                padding: 15px 25px;
+                gap: 10px;
+                border-radius: 12px;
+            }
+            .numero, .separador {
+                font-size: 7vw;
+            }
+            .rotulo {
+                font-size: 2vw;
+                letter-spacing: 1.5px;
+                margin-top: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="main-container">
+        <img src="logo.png" alt="Logo" id="logo">
+        
+        <div class="glass-box">
+            <div class="bloco-tempo">
+                <span class="numero" id="dias">00</span>
+                <span class="rotulo">DIAS</span>
+            </div>
+            
+            <div class="separador">:</div>
+            
+            <div class="bloco-tempo">
+                <span class="numero" id="horas">00</span>
+                <span class="rotulo">HORAS</span>
+            </div>
+
+            <div class="separador">:</div>
+            
+            <div class="bloco-tempo">
+                <span class="numero" id="minutos">00</span>
+                <span class="rotulo">MINUTOS</span>
+            </div>
+
+            <div class="separador">:</div>
+            
+            <div class="bloco-tempo">
+                <span class="numero" id="segundos">00</span>
+                <span class="rotulo">SEGUNDOS</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const dataAlvo = new Date("2026-08-20T00:00:00").getTime();
+        const intervalo = setInterval(atualizarContador, 1000);
+
+        function atualizarContador() {
+            const agora = new Date().getTime();
+            const distancia = dataAlvo - agora;
+
+            if (distancia <= 0) {
+                clearInterval(intervalo);
+                document.getElementById("main-container").style.display = "none";
+                return; 
+            }
+
+            const dias = Math.floor(distancia / (1000 * 60 * 60 * 24));
+            const horas = Math.floor((distancia % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
+            const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
+
+            document.getElementById("dias").innerText = String(dias).padStart(2, '0');
+            document.getElementById("horas").innerText = String(horas).padStart(2, '0');
+            document.getElementById("minutos").innerText = String(minutos).padStart(2, '0');
+            document.getElementById("segundos").innerText = String(segundos).padStart(2, '0');
+        }
+
+        atualizarContador();
+    </script>
+</body>
+</html>
