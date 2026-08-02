@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHorizon Countdown</title>
+    <title>Contagem Regressiva</title>
     <style>
-        /* Reseta as margens e define o fundo preto caso o tempo acabe */
         body, html {
             margin: 0;
             padding: 0;
@@ -26,6 +25,45 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            position: relative; /* Necessário para posicionar o botão no topo absoluto */
+        }
+
+        /* Estilo do Botão do Discord com Glassmorphism */
+        #discord-btn {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px; /* Espaço entre a logo e o texto */
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 12px 24px;
+            border-radius: 50px; /* Deixa o botão bem arredondado */
+            text-decoration: none;
+            color: #FFFFFF;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #discord-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-50%) scale(1.05); /* Efeito de crescer um pouco ao passar o mouse */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        #discord-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: #FFFFFF;
         }
 
         #logo {
@@ -34,7 +72,6 @@
             margin-bottom: 30px;
         }
 
-        /* Caixa glassmorphism mantida estreita e elegante */
         .glass-box {
             background: rgba(255, 255, 255, 0.1); 
             backdrop-filter: blur(20px) saturate(120%);
@@ -57,33 +94,33 @@
             align-items: center;
         }
 
-        /* Texto branco, limpo e sem bordas/sombras */
         .numero, .separador {
             font-family: 'Arial Black', Impact, sans-serif;
             font-weight: 900;
             font-size: 4vw; 
-            color: #FFFFFF; /* Branco puro */
+            color: #FFFFFF; 
             line-height: 1;
-            /* Sombras e bordas removidas */
         }
 
         .separador {
             margin-top: -3px; 
         }
 
-        /* Rótulos acompanhando o estilo clean */
         .rotulo {
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            font-weight: 400; /* Peso normal para manter a clareza */
+            font-weight: 400; 
             font-size: 1vw; 
-            color: #FFFFFF; /* Branco puro */
+            color: #FFFFFF; 
             margin-top: 10px;
             letter-spacing: 3px;
-            /* Sombras removidas */
         }
 
-        /* Ajustes para telas de celular */
         @media (max-width: 768px) {
+            #discord-btn {
+                top: 20px;
+                padding: 10px 20px;
+                font-size: 12px;
+            }
             .glass-box {
                 padding: 15px 25px;
                 gap: 10px;
@@ -103,6 +140,15 @@
 <body>
 
     <div id="main-container">
+        
+        <!-- Botão do Discord -->
+        <a href="https://discord.gg/hunFzjaCw2" target="_blank" id="discord-btn">
+            <svg viewBox="0 0 127.14 96.36">
+                <path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1,105.25,105.25,0,0,0,32.19-16.14c2.64-27.38-4.51-51.11-19.32-72.1M42.56,65.36c-5.36,0-9.76-4.83-9.76-10.74s4.31-10.74,9.76-10.74c5.48,0,9.85,4.86,9.76,10.74C52.32,60.53,48.04,65.36,42.56,65.36Zm42,0c-5.36,0-9.76-4.83-9.76-10.74s4.31-10.74,9.76-10.74c5.48,0,9.85,4.86,9.76,10.74C84.34,60.53,80.05,65.36,84.53,65.36Z"/>
+            </svg>
+            Junte-se ao Discord
+        </a>
+
         <img src="logo.png" alt="Logo" id="logo">
         
         <div class="glass-box">
@@ -134,40 +180,28 @@
         </div>
     </div>
 
-<script>
-        // Adicionei "-03:00" no final para cravar o fuso horário de Brasília.
-        // Assim, o zero do contador será exatamente meia-noite no Brasil, independente de onde o usuário acesse.
+    <script>
         const dataAlvo = new Date("2026-08-20T00:00:00-03:00").getTime();
-        
-        let diferencaTempo = 0; // Armazena a diferença entre a máquina e o mundo real
+        let diferencaTempo = 0; 
 
-        // Função para buscar o horário global de forma assíncrona
         async function obterHorarioGlobal() {
             try {
-                // Consulta uma API pública confiável
                 const res = await fetch('https://worldtimeapi.org/api/timezone/America/Sao_Paulo');
-                if (!res.ok) throw new Error('Falha na resposta da API');
-                
+                if (!res.ok) throw new Error('Falha na resposta');
                 const dados = await res.json();
                 
-                // Horário exato retornado pelo servidor
                 const tempoGlobal = new Date(dados.datetime).getTime();
-                
-                // Horário da máquina no exato momento da resposta
                 const tempoLocal = new Date().getTime();
                 
-                // Calcula se o relógio do usuário está adiantado ou atrasado
                 diferencaTempo = tempoGlobal - tempoLocal;
             } catch (erro) {
-                // Se a API cair ou der erro, avisa no console mas o site continua funcionando
-                console.warn("Aviso: Falha ao sincronizar horário global. Utilizando relógio local como fallback.");
+                console.warn("Aviso: Falha ao sincronizar horário global. Usando relógio local.");
             }
         }
 
         const intervalo = setInterval(atualizarContador, 100);
 
         function atualizarContador() {
-            // Usa o relógio da máquina + a diferença corrigida da API
             const agora = new Date().getTime() + diferencaTempo; 
             const distancia = dataAlvo - agora;
 
@@ -188,7 +222,6 @@
             document.getElementById("segundos").innerText = String(segundos).padStart(2, '0');
         }
 
-        // Dispara a busca pela hora global e inicia o contador imediatamente
         obterHorarioGlobal();
         atualizarContador();
     </script>
